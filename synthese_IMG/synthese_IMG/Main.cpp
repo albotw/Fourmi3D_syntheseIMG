@@ -33,6 +33,7 @@ void mouse(int bouton, int etat, int x, int y);
 void mousemotion(int x, int y);
 //====================================================
 void specialKeyInput(int key, int x, int y);
+double toRadians(double degres);
 
 int main(int argc, char** argv)
 {
@@ -41,16 +42,33 @@ int main(int argc, char** argv)
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
     glShadeModel(GL_SMOOTH);
-    glutInitWindowPosition(200, 200);
-    glutInitWindowSize(500, 500);
+    glutInitWindowPosition(0, 0);
+    glutInitWindowSize(1000, 1000);
     glutCreateWindow("cube");
 
     /* Initialisation d'OpenGL */
-    glClearColor(0.0, 0.0, 0.0, 0.0);
+    glClearColor(0.2, 0.2, 0.2, 1.0);
     glColor3f(1.0, 1.0, 1.0);
     glPointSize(2.0);
     glEnable(GL_DEPTH_TEST);
 
+    //lumière
+    glEnable(GL_LIGHTING);
+    GLfloat ambientColor[] = { 0.2f, 0.2f, 0.2f, 1.0f };
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambientColor);
+    glEnable(GL_COLOR_MATERIAL);
+    glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+
+    GLfloat ambientProj[] = { 1.0, 1.0, 1.0, 1.0 };
+    glLightfv(GL_LIGHT0, GL_AMBIENT, ambientProj);
+    GLfloat posProj[] = { 0.0, 15.0, 0.0 };
+    glLightfv(GL_LIGHT0, GL_POSITION, posProj);
+    GLfloat dirProj[] = { 0.0, 0.0, -1.0 };
+    glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, dirProj);
+    glEnable(GL_LIGHT0);
+
+
+    //fonctions glut
     glutDisplayFunc(affichage);
     glutKeyboardFunc(clavier);
     glutReshapeFunc(reshape);
@@ -60,6 +78,7 @@ int main(int argc, char** argv)
     glutSpecialFunc(specialKeyInput);
 
     glutMainLoop();
+    
     return 0;
 }
 
@@ -68,6 +87,12 @@ void idle()
     glutPostRedisplay();
 }
 
+double toRadians(double degres)
+{
+    return degres / 180 * M_PI;
+}
+//================================================================
+// Méthodes modélisation fourmi.
 void patte()
 {
     glPushMatrix();
@@ -96,6 +121,97 @@ void patte()
     glPopMatrix();
 }
 
+void antenne()
+{
+    glPushMatrix();
+    glColor3f(1, 1, 1);
+    glTranslatef(-3, 0.8, 0.6);
+    glRotatef(90, 0, 1, 0);
+    glRotatef(45, -1, 0, 0);
+    glRotatef(25, 0, 0, 1);
+    glScalef(0.05, 0.6, 0.05);
+    glutSolidCylinder(1, 1, 10, 10);
+    glPopMatrix();
+}
+
+void abdomen()
+{
+    glPushMatrix();
+    glColor3f(1.0, 0.3, 0.3);
+    glScalef(1.6, 1.0, 1.0);
+    glutSolidSphere(1, 50, 50);
+    glPopMatrix();
+}
+
+void queue()
+{
+    glPushMatrix();
+
+    glTranslatef(1.4, 0, 0);
+    glRotatef(20, 0, 0, 1);
+
+    glPushMatrix();
+    glColor3f(1.0f, 0.0f, 0.0f);
+    glScalef(0.5, 0.5, 0.35);
+    glRotatef(90, 0, 1.0, 0);
+    glutSolidCylinder(1.0, 1.0, 10, 10);
+    glPopMatrix();
+
+    glColor3f(0.0f, 0.4f, 0.6f);
+    glTranslatef(1.8, 0, 0);
+    glScalef(1.8, 1.2, 1.2);
+    glutSolidSphere(1, 50, 50);
+    glPopMatrix();
+}
+
+void tete()
+{
+    //jointure
+    glPushMatrix();
+    glColor3f(1.0, 0.0, 0.0);
+    glTranslatef(-2.0, 0, 0);
+
+    glRotatef(90, 0, 1.0, 0);
+    glScalef(0.3, 0.3, 0.6);
+    glutSolidCylinder(1.0, 1.0, 10, 10);
+    glPopMatrix();
+
+    //tête
+    glPushMatrix();
+    glColor3f(0.4, 0.4, 0.7);
+    glTranslatef(-2.5, 0, 0);
+    glScalef(0.9, 0.7, 0.9);
+    glutSolidSphere(1.0, 50, 50);
+    glPopMatrix();
+
+    //yeux
+    glPushMatrix();
+    glColor3f(0, 0, 0);
+    glTranslatef(-3.2, 0, 0);
+    glScalef(0.2, 0.2, 0.2);
+
+    glPushMatrix();
+    glTranslatef(0, 0, -2);
+    glutSolidSphere(1, 50, 50);
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslatef(0, 0, 2);
+    glutSolidSphere(1, 50, 50);
+    glPopMatrix();
+
+    glPopMatrix();
+
+    //antennes
+    antenne();
+
+    glPushMatrix();
+    glScalef(1.0, 1.0, -1.0);
+    antenne();
+    glPopMatrix();
+}
+//=================================================================
+
 void affichage()
 {
     int i, j;
@@ -118,15 +234,11 @@ void affichage()
     gluLookAt(0.0, 0.0, 10.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
     glRotatef(angley, 1.0, 0.0, 0.0);
     glRotatef(anglex, 0.0, 1.0, 0.0);
-    glPopMatrix();
+    //glPopMatrix();
 
-    //==== abdomen ====
-    glPushMatrix();
-    glColor3f(1.0f, 0.0f, 0.0f);
-    glScalef(1.6, 1.0, 1.0);
-    glutSolidSphere(1, 10, 10);
-    glPopMatrix();
-    //=================
+    abdomen();
+    queue();
+    tete();
 
     //pattes coté gauche
     patte();

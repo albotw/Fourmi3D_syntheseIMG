@@ -2,7 +2,7 @@
 projet de synthèse d'image pour la L3. 
 
 TODO:
-* modéliser fourmi
+* modéliser fourmi                              DONE
 * avec 1 primitive en représentation param
 * deux textures: 1 enroulée et une plaquée
 * deux types de lumières
@@ -11,9 +11,14 @@ TODO:
 * animation avec touches claviers               
 * animation auto
 
+RAPPELS:
 pour déplacer un objet par rapport a un autre:
 on déplace l'objet sur le centre (la position de l'autre)
 puis on translate sur la position originale
 
 L'origine du cylindre est le centre de sa base
 les axes du cylindre sont parallèles à Z.
+
+Z blender = Y glut
+X blender = Z glut
+Y blender = X glut
