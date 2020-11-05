@@ -2,14 +2,15 @@
 projet de synthèse d'image pour la L3. 
 
 TODO:
+
 * modéliser fourmi                              DONE
 * avec 1 primitive en représentation param
 * deux textures: 1 enroulée et une plaquée
-* deux types de lumières
+* deux types de lumières                        DONE
 * zoom avec z et Z                              DONE
 * contrôle de la caméra avec les flèches        DONE
-* animation avec touches claviers               
-* animation auto
+* animation avec touches claviers
+* animation auto                                EN COURS
 
 RAPPELS:
 pour déplacer un objet par rapport a un autre:
