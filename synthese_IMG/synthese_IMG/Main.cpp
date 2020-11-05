@@ -32,6 +32,7 @@ double zoom = 60.0f;
 GLfloat posProj[4];
 GLfloat posAmbient[4];
 
+
 void affichage();
 void clavier(unsigned char touche, int x, int y);
 void reshape(int x, int y);
@@ -41,6 +42,7 @@ void mousemotion(int x, int y);
 //====================================================
 void specialKeyInput(int key, int x, int y);
 double toRadians(double degres);
+void marron();
 
 int main(int argc, char** argv)
 {
@@ -77,7 +79,7 @@ int main(int argc, char** argv)
     glEnable(GL_LIGHTING);
 
     posProj[0] = 0;
-    posProj[1] = 10;
+    posProj[1] = 15;
     posProj[2] = 0;
     posProj[3] = 0;
 
@@ -103,7 +105,7 @@ int main(int argc, char** argv)
     posAmbient[1] = -5;
     posAmbient[2] = 0;
 
-    GLfloat ambient2[] = { 0.0, 0.5, 0.0, 1.0 };
+    GLfloat ambient2[] = { 0.0, 0.4, 0.0, 1.0 };
 
     glLightfv(GL_LIGHT1, GL_AMBIENT, ambient2);
     glLightfv(GL_LIGHT1, GL_POSITION, posAmbient);
@@ -161,6 +163,11 @@ double toRadians(double degres)
 {
     return degres / 180 * M_PI;
 }
+
+void marron()
+{
+    glColor3f(0.7, 0.3, 0);
+}
 //================================================================
 // Méthodes modélisation fourmi.
 void patte()
@@ -169,21 +176,21 @@ void patte()
     glRotatef(15, -1, 0, 0);
 
     glPushMatrix();
-    glColor3f(0.3f, 1.0f, 0.3f);
+    marron();
     glTranslatef(0, 0, 1.0);
     glScalef(0.15, 0.15, 2.0);
     glutSolidCylinder(1.0, 1.0, 10, 10);
     glPopMatrix();
 
     glPushMatrix();
-    glColor3f(1.0, 0.3, 0.3);
+    marron();
     glTranslatef(0, 0, 3.15);
     glScalef(0.2, 0.2, 0.2);
     glutSolidSphere(1.0, 10, 10);
     glPopMatrix();
 
     glPushMatrix();
-    glColor3f(0.3, 1.0, 0.3);
+    marron();
 
     glTranslatef(0, 0, 3.15);
     glRotatef(90, 1.0, 0.0, 0.0);
@@ -199,26 +206,24 @@ void patte()
 void antenne()
 {
     glPushMatrix();
-    glColor3f(1, 1, 1);
-    glTranslatef(-3, 0.8, 0.6);
+    marron();
+    glTranslatef(0, 0.8, 0);
     glRotatef(90, 0, 1, 0);
-    glRotatef(45, -1, 0, 0);
-    glRotatef(25, 0, 0, 1);
     glScalef(0.05, 0.6, 0.05);
     glutSolidCylinder(1, 1, 10, 10);
     glPopMatrix();
 
     //jointure inter
     glPushMatrix();
-    glColor3f(1, 1, 0);
-    glTranslatef(-3.35, 1.19, 0.85);
+    marron();
+    glTranslatef(-0.02, 1.35, 0);
     glScalef(0.03, 0.03, 0.03);
     glutSolidSphere(1.0, 10, 10);
     glPopMatrix();
 
     glPushMatrix();
-    glColor3f(0.4, 0.5, 0.6);
-    glTranslatef(-3.35, 1.19, 0.85);
+    marron();
+    glTranslatef(0, 1.35, 0);
     glRotatef(90, 0, -1, 0);
     glScalef(0.02, 0.02, 2.0);
     glutSolidCylinder(1, 1, 10, 10);
@@ -228,7 +233,7 @@ void antenne()
 void abdomen()
 {
     glPushMatrix();
-    glColor3f(1.0, 0.3, 0.3);
+    marron();
     glScalef(1.6, 1.0, 1.0);
     glutSolidSphere(1, 50, 50);
     glPopMatrix();
@@ -245,13 +250,13 @@ void queue()
     glRotatef(20, 0, 0, 1);
 
     glPushMatrix();
-    glColor3f(1.0f, 0.0f, 0.0f);
+    marron();
     glScalef(0.5, 0.5, 0.35);
     glRotatef(90, 0, 1.0, 0);
     glutSolidCylinder(1.0, 1.0, 10, 10);
     glPopMatrix();
 
-    glColor3f(0.0f, 0.4f, 0.6f);
+    marron();
     glTranslatef(1.8, 0, 0);
     glScalef(1.8, 1.2, 1.2);
     glutSolidSphere(1, 50, 50);
@@ -264,49 +269,62 @@ void tete()
 {
     //animation continue
     glPushMatrix();
-    glRotatef(animValue_tete, 0, 1, 0);
+    //glRotatef(animValue_tete, 0, 1, 0);
+
         //jointure
         glPushMatrix();
-        glColor3f(1.0, 0.0, 0.0);
-        glTranslatef(-2.0, 0, 0);
-
-        glRotatef(90, 0, 1.0, 0);
-        glScalef(0.3, 0.3, 0.6);
-        glutSolidCylinder(1.0, 1.0, 10, 10);
+            marron();
+            glTranslatef(-2.0, 0, 0);
+            glRotatef(90, 0, 1.0, 0);
+            glScalef(0.3, 0.3, 0.6);
+            glutSolidCylinder(1.0, 1.0, 10, 10);
         glPopMatrix();
 
         //tête
         glPushMatrix();
-        glColor3f(0.4, 0.4, 0.7);
-        glTranslatef(-2.5, 0, 0);
-        glScalef(0.9, 0.7, 0.9);
-        glutSolidSphere(1.0, 50, 50);
+            marron();
+            glTranslatef(-2.5, 0, 0);
+            glScalef(0.9, 0.7, 0.9);
+            glutSolidSphere(1.0, 50, 50);
         glPopMatrix();
 
         //yeux
         glPushMatrix();
-        glColor3f(0, 0, 0);
-        glTranslatef(-3.2, 0, 0);
-        glScalef(0.2, 0.2, 0.2);
 
-        glPushMatrix();
-        glTranslatef(0, 0, -2);
-        glutSolidSphere(1, 50, 50);
-        glPopMatrix();
+            glColor3f(0, 0, 0);
+            glTranslatef(-3.2, 0, 0);
+            glScalef(0.2, 0.2, 0.2);
 
-        glPushMatrix();
-        glTranslatef(0, 0, 2);
-        glutSolidSphere(1, 50, 50);
-        glPopMatrix();
+            glPushMatrix();
+                glTranslatef(0, 0, -2);
+                glutSolidSphere(1, 50, 50);
+            glPopMatrix();
+
+            glPushMatrix();
+                glTranslatef(0, 0, 2);
+                glutSolidSphere(1, 50, 50);
+            glPopMatrix();
 
         glPopMatrix();
 
         //antennes
-        antenne();
-
         glPushMatrix();
-        glScalef(1.0, 1.0, -1.0);
-        antenne();
+        
+            glTranslatef(-2.5, 0, 0);
+            glRotatef(20, 0, 0, 1);
+
+            glPushMatrix();
+                glTranslatef(0, 0, 0.5);
+                glRotatef(20, 0, 1, 0);
+                antenne();
+            glPopMatrix();
+
+            glPushMatrix();
+                glTranslatef(0, 0, -0.5);
+                glRotatef(20, 0, -1, 0);
+                antenne();
+            glPopMatrix();
+
         glPopMatrix();
     glPopMatrix();
 }
@@ -315,27 +333,22 @@ void tete()
 void affichage()
 {
     int i, j;
-    /* effacement de l'image avec la couleur de fond */
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glShadeModel(GL_SMOOTH);
 
-    // recadrage de l'afichage
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     gluPerspective(zoom, 500.0 / 500.0, 0.1, 100.0);
-    
-    //glLoadIdentity();
-    //glOrtho(-10, 10, -10, 10, -7, 15);
     glPopMatrix();
 
     //affichage des polygones
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+
     gluLookAt(0.0, 0.0, 10.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+
     glRotatef(angley, 1.0, 0.0, 0.0);
     glRotatef(anglex, 0.0, 1.0, 0.0);
-    
-    //glPopMatrix();
 
     glLightfv(GL_LIGHT0, GL_POSITION, posProj);
     glLightfv(GL_LIGHT1, GL_POSITION, posAmbient);
@@ -348,29 +361,29 @@ void affichage()
     patte();
 
     glPushMatrix();
-    glRotatef(45, 0.0, 1.0, 0.0);
-    patte();
+        glRotatef(45, 0.0, 1.0, 0.0);
+        patte();
     glPopMatrix();
 
     glPushMatrix();
-    glRotatef(45, 0.0, -1.0, 0.0);
-    patte();
+        glRotatef(45, 0.0, -1.0, 0.0);
+        patte();
     glPopMatrix();
 
     //pattes coté droit
     glPushMatrix();
-    glScalef(1.0, 1.0, -1.0);
-    patte();
+        glScalef(1.0, 1.0, -1.0);
+        patte();
 
-    glPushMatrix();
-    glRotatef(45, 0.0, -1.0, 0.0);
-    patte();
-    glPopMatrix();
+        glPushMatrix();
+            glRotatef(45, 0.0, -1.0, 0.0);
+            patte();
+        glPopMatrix();
 
-    glPushMatrix();
-    glRotatef(45, 0.0, 1.0, 0.0);
-    patte();
-    glPopMatrix();
+        glPushMatrix();
+            glRotatef(45, 0.0, 1.0, 0.0);
+            patte();
+        glPopMatrix();
 
     glPopMatrix();
 
