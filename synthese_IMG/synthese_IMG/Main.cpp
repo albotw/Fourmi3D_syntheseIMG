@@ -5,19 +5,7 @@
 #include <cmath>
 #include <iostream>
 
-/*class Point*/
-class Point {
-public:
-    //coordonnées x, y et z du point
-    double x;
-    double y;
-    double z;
-    // couleur r, v et b du point
-    float r;
-    float g;
-    float b;
-};
-//Tableau pour stocker les sommets du cube et leur couleur
+#include "Sphere.h"
 
 char presse;
 int anglex, angley, x, y, xold, yold;
@@ -27,6 +15,13 @@ double animValue_tete = 0.0;
 bool incrTete = true;
 double animValue_queue = 0.0;
 bool incrQueue = false;
+double animValue_antenne = 0.0;
+bool incrAntenne = true;
+double animValue_mandibule = 0.0;
+bool incrMandibule = false;
+
+double animValue_patte = 0.0;
+bool incrPatte = true;
 
 double zoom = 60.0f;
 GLfloat posProj[4];
@@ -43,6 +38,7 @@ void mousemotion(int x, int y);
 void specialKeyInput(int key, int x, int y);
 double toRadians(double degres);
 void marron();
+void updateAnimPattes();
 
 int main(int argc, char** argv)
 {
@@ -126,6 +122,21 @@ int main(int argc, char** argv)
     return 0;
 }
 
+void updateAnimPattes()
+{
+    /*
+    if (animValue_patte >= 10.0)
+        incrPatte = false;
+    else if (animValue_patte <= -10.0)
+        incrPatte = true;
+    */
+
+    if (incrPatte)
+        animValue_patte += 0.3;
+    else
+        animValue_patte -= 0.5;
+}
+
 void idle()
 {
     if (animValue_tete >= 15.0)
@@ -146,15 +157,39 @@ void idle()
         incrQueue = true;
     }
 
+    if (animValue_antenne >= 10.0)
+    {
+        incrAntenne = false;
+    }
+    else if (animValue_antenne <= 0.9)
+    {
+        incrAntenne = true;
+    }
+
+    if (animValue_mandibule >= 10.0)
+        incrMandibule = false;
+    else if (animValue_mandibule <= 0.0)
+        incrMandibule = true;
+
     if (incrTete)
         animValue_tete += 0.01;
     else
         animValue_tete -= 0.01;
 
     if (incrQueue)
-        animValue_queue += 0.05;
+        animValue_queue += 0.01;
     else
-        animValue_queue -= 0.05;
+        animValue_queue -= 0.01;
+
+    if (incrAntenne)
+        animValue_antenne += 0.1;
+    else
+        animValue_antenne -= 0.1;
+
+    if (incrMandibule)
+        animValue_mandibule += 0.04;
+    else
+        animValue_mandibule -= 0.04;
 
     glutPostRedisplay();
 }
@@ -206,6 +241,9 @@ void patte()
 void antenne()
 {
     glPushMatrix();
+    glRotatef(animValue_antenne, 0, 1, 0);
+
+    glPushMatrix();
     marron();
     glTranslatef(0, 0.8, 0);
     glRotatef(90, 0, 1, 0);
@@ -227,6 +265,8 @@ void antenne()
     glRotatef(90, 0, -1, 0);
     glScalef(0.02, 0.02, 2.0);
     glutSolidCylinder(1, 1, 10, 10);
+    glPopMatrix();
+
     glPopMatrix();
 }
 
@@ -265,11 +305,41 @@ void queue()
     glPopMatrix();
 }
 
+void mandibule()
+{
+    glPushMatrix();
+    glRotatef(90, 1, 0, 0);
+    glScalef(0.1, 0.1, 1);
+    glutSolidCylinder(1, 1, 10, 10);
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslatef(0, -1.1, 0);
+    glScalef(0.1, 0.1, 0.1);
+    glutSolidSphere(1, 50, 50);
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslatef(0, -1.1, 0);
+    glRotatef(animValue_mandibule, 0, 0, 1);
+
+    glPushMatrix();
+    glRotatef(90, 1, 1, 0);
+
+    glScalef(0.1, 0.1, 1.2);
+
+    glTranslatef(0, 0, 0.05);
+    glutSolidCylinder(1, 1, 10, 10);
+    glPopMatrix();
+    
+    glPopMatrix();
+}
+
 void tete()
 {
     //animation continue
     glPushMatrix();
-    //glRotatef(animValue_tete, 0, 1, 0);
+    glRotatef(animValue_tete, 0, 1, 0);
 
         //jointure
         glPushMatrix();
@@ -284,24 +354,56 @@ void tete()
         glPushMatrix();
             marron();
             glTranslatef(-2.5, 0, 0);
-            glScalef(0.9, 0.7, 0.9);
+            glScalef(1, 0.7, 0.9);
             glutSolidSphere(1.0, 50, 50);
+        glPopMatrix();
+
+        //mandibule droite
+        glPushMatrix();
+        glColor3f(1, 1, 1);
+        marron();
+
+        glTranslatef(-2.5, 0, 0);
+        glRotatef(90, 0, 1, 0);
+        glRotatef(90, 1, 0, 0);
+
+        glPushMatrix();
+        glTranslatef(-0.5, -0.8, 0);
+            glScalef(0.5, 0.5, 0.5);
+            mandibule();
+        glPopMatrix();
+        glPopMatrix();
+
+        //mandibule gauche
+        glPushMatrix();
+        glColor3f(1, 1, 1);
+        marron();
+
+        glTranslatef(-2.5, 0, 0);
+        glRotatef(90, 0, -1, 0);
+        glRotatef(90, -1, 0, 0);
+
+        glPushMatrix();
+        glTranslatef(-0.5, -0.8, 0);
+        glScalef(0.5, 0.5, 0.5);
+        mandibule();
+        glPopMatrix();
         glPopMatrix();
 
         //yeux
         glPushMatrix();
 
             glColor3f(0, 0, 0);
-            glTranslatef(-3.2, 0, 0);
+            glTranslatef(-2.7, 0, 0);
             glScalef(0.2, 0.2, 0.2);
 
             glPushMatrix();
-                glTranslatef(0, 0, -2);
+                glTranslatef(0, 0.2, -4);
                 glutSolidSphere(1, 50, 50);
             glPopMatrix();
 
             glPushMatrix();
-                glTranslatef(0, 0, 2);
+                glTranslatef(0, 0.2, 4);
                 glutSolidSphere(1, 50, 50);
             glPopMatrix();
 
@@ -326,6 +428,62 @@ void tete()
             glPopMatrix();
 
         glPopMatrix();
+    glPopMatrix();
+}
+
+void fourmi()
+{
+    abdomen();
+    tete();
+    queue();
+
+    //pattes coté gauche
+    glPushMatrix();
+    glRotatef(10 * cos(animValue_patte + (M_PI) / 2), 1, 1, 0);
+    patte();
+    glPopMatrix();
+
+    glPushMatrix();
+    glRotatef(10 * cos(animValue_patte + (M_PI) / 3), 1, 1, 0);
+    glPushMatrix();
+    glRotatef(45, 0.0, 1.0, 0.0);
+    patte();
+    glPopMatrix();
+    glPopMatrix();
+
+    glPushMatrix();
+    glRotatef(10 * cos(animValue_patte + (2 * M_PI) / 3), 1, 1, 0);
+    glPushMatrix();
+    glRotatef(45, 0.0, -1.0, 0.0);
+    patte();
+    glPopMatrix();
+    glPopMatrix();
+
+    //pattes coté droit
+    glPushMatrix();
+    glScalef(1.0, 1.0, -1.0);
+
+    glPushMatrix();
+    glRotatef(10 * sin(animValue_patte + (M_PI) / 2), 1, 1, 0);
+    patte();
+    glPopMatrix();
+
+    glPushMatrix();
+    glRotatef(10 * sin(animValue_patte + (M_PI) / 3), 1, 1, 0);
+    glPushMatrix();
+    glRotatef(45, 0.0, -1.0, 0.0);
+    patte();
+    glPopMatrix();
+    glPopMatrix();
+
+    glPushMatrix();
+    glRotatef(10 * sin(animValue_patte + (2 * M_PI) / 3), 1, 1, 0);
+    glPushMatrix();
+    glRotatef(45, 0.0, 1.0, 0.0);
+    patte();
+    glPopMatrix();
+    glPopMatrix();
+
     glPopMatrix();
 }
 //=================================================================
@@ -353,39 +511,8 @@ void affichage()
     glLightfv(GL_LIGHT0, GL_POSITION, posProj);
     glLightfv(GL_LIGHT1, GL_POSITION, posAmbient);
 
-    abdomen();
-    queue();
-    tete();
-
-    //pattes coté gauche
-    patte();
-
-    glPushMatrix();
-        glRotatef(45, 0.0, 1.0, 0.0);
-        patte();
-    glPopMatrix();
-
-    glPushMatrix();
-        glRotatef(45, 0.0, -1.0, 0.0);
-        patte();
-    glPopMatrix();
-
-    //pattes coté droit
-    glPushMatrix();
-        glScalef(1.0, 1.0, -1.0);
-        patte();
-
-        glPushMatrix();
-            glRotatef(45, 0.0, -1.0, 0.0);
-            patte();
-        glPopMatrix();
-
-        glPushMatrix();
-            glRotatef(45, 0.0, 1.0, 0.0);
-            patte();
-        glPopMatrix();
-
-    glPopMatrix();
+    fourmi();
+    //mandibule();
 
     //Repère
     //axe x en rouge
@@ -429,31 +556,25 @@ void clavier(unsigned char touche, int x, int y)
         glutPostRedisplay();
         break;
 
-    case 'p': /* affichage du carre plein */
+    case '1': /* affichage du carre plein */
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         glutPostRedisplay();
         break;
-    case 'f': /* affichage en mode fil de fer */
+    case '2': /* affichage en mode fil de fer */
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         glutPostRedisplay();
         break;
-    case 's': /* Affichage en mode sommets seuls */
+    case '3': /* Affichage en mode sommets seuls */
         glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
         glutPostRedisplay();
         break;
-    case 'd':
-        glEnable(GL_DEPTH_TEST);
+
+    case 'e':
+        updateAnimPattes();
         glutPostRedisplay();
         break;
-    case 'D':
-        glDisable(GL_DEPTH_TEST);
-        glutPostRedisplay();
-        break;
-    case 'm':
-        haut += 1;
-        affichage();
-        break;
-    case 'q': /*la touche 'q' permet de quitter le programme */
+
+    case 27: /*la touche 'q' permet de quitter le programme */
         exit(0);
     }
 }
