@@ -16,10 +16,12 @@ Point* sphere(int n, int m)
             sphere[j + (i * m)].z = sin(theta) * sin(phi);
             sphere[j + (i * m)].y = cos(theta);
 
+            /*
             std::cout << "point " << (j + (i * m)) << ":";
             std::cout << sphere[j + (i * m)].x << " ";
             std::cout << sphere[j + (i * m)].y << " ";
             std::cout << sphere[j + (i * m)].z << " " << std::endl;
+            */
         }
     }
     return sphere;
@@ -33,27 +35,27 @@ Face* sphere_faces(Point* sphere, int n, int m)
         for (int j = 0; j < m - 1; j++)
         {
             Face f{ 0, 0, 0, 0 };
-            //glTexCoord2d((double)i/((double)n-1), (double)j/((double)m-1));
+
 
             f.i = (i * m) + j;
             f.l = (i * m) + j + 1;
 
             if (i != n - 1)
             {
-                std::cout << "path 1 ";
+                //std::cout << "path 1 ";
                 f.j = (i + 1) * m + j;
                 f.k = (i + 1) * m + j + 1;
 
             }
             else
             {
-                std::cout << "path 2 ";
+                //std::cout << "path 2 ";
                 f.j = j;
                 f.k = j + 1;
             }
 
-            std::cout << "face: ";
-            std::cout << f.i << " " << f.j << " " << f.k << " " << f.l << std::endl;
+            //std::cout << "face: ";
+            //std::cout << f.i << " " << f.j << " " << f.k << " " << f.l << std::endl;
 
             face_sphere[j + (i * m)] = f;
         }
@@ -64,14 +66,19 @@ Face* sphere_faces(Point* sphere, int n, int m)
 
 void render_sphere(Point* sphere, Face* face_sphere, int n, int m)
 {
+    glEnable(GL_TEXTURE_2D);
     glBegin(GL_POLYGON);
     for (int i = 0; i < (n * m); i++)
     {
-        glColor3f(1.0, 1.0, 1.0);
+        glTexCoord2f(0.0, 0.0);
         glVertex3f(sphere[face_sphere[i].i].x, sphere[face_sphere[i].i].y, sphere[face_sphere[i].i].z);
+        glTexCoord2f(0.0, 1.0);       
         glVertex3f(sphere[face_sphere[i].j].x, sphere[face_sphere[i].j].y, sphere[face_sphere[i].j].z);
+        glTexCoord2f(1.0, 1.0);
         glVertex3f(sphere[face_sphere[i].k].x, sphere[face_sphere[i].k].y, sphere[face_sphere[i].k].z);
+        glTexCoord2f(1.0, 0.0);
         glVertex3f(sphere[face_sphere[i].l].x, sphere[face_sphere[i].l].y, sphere[face_sphere[i].l].z);
     }
     glEnd();
+    glDisable(GL_TEXTURE_2D);
 }

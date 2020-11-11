@@ -143,12 +143,20 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Cylindre.h" />
+    <ClInclude Include="Fourmi.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Cylindre.cpp" />
+    <ClCompile Include="Fourmi.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Sphere.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="gold.png" />
+    <Image Include="noir.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
