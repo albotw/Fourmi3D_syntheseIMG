@@ -51,7 +51,7 @@ Point* pts_oeil2;
 Face* faces_oeil1;
 Face* faces_oeil2;
 
-int n_cylindre = 20;
+int n_cylindre = 50;
 
 Point* pts_patteHaut;
 Point* pts_patteBas;
@@ -229,7 +229,7 @@ void tete()
     marron();
     glTranslatef(-2.5, 0, 0);
     glScalef(1, 0.7, 0.9);
-    glutSolidSphere(1.0, 50, 50);
+    glutSolidSphere(1.0, 100, 100);
     glPopMatrix();
 
     //mandibule droite
@@ -383,38 +383,48 @@ int main(int argc, char** argv)
 
     /* Initialisation d'OpenGL */
     glClearColor(0.2, 0.2, 0.2, 1.0);
-    glShadeModel(GL_SMOOTH);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_COLOR_MATERIAL);
     glEnable(GL_LIGHTING);
-    
+    glEnable(GL_NORMALIZE);
+
     /*coloration des polygones*/
-    glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
-    glMateriali(GL_FRONT_AND_BACK, GL_SHININESS, 100);
+    glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+    float MatAmbient[] = { 0.24725, 0.1995, 0.0745, 1.0f };
+    float MatDiffuse[] = { 0.75164, 0.60648, 0.22648, 1.0f };
+    float MatSpecular[] = { 0.628281, 0.555802, 0.366065, 1.0f };
+    float MatShininess = 0.4 * 128.0;
+    float black[] = { 0.0f,0.0f,0.0f,1.0f };
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, MatAmbient);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, MatDiffuse);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, MatSpecular);
+    glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, MatShininess);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, black);
 
     /*Lumière 0: spot blanc au dessus de la fourmi*/
+    glEnable(GL_LIGHT0);
     posProj[0] = 0;
-    posProj[1] = 15;
+    posProj[1] = 5;
     posProj[2] = 0;
-    posProj[3] = 0;
-    GLfloat dirProj[] = { 0.0, 0.0, 0.0 };
-    GLfloat ambient[] = { 0.2, 0.2, 0.2, 1.0 };
+    posProj[3] = 1.0;
+    GLfloat dirProj[] = { 0.0, 0.0, 0.0, 1.0};
+    GLfloat ambient[] = { 0.1, 0.1, 0.1, 1.0 };
     GLfloat diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
     GLfloat specular[] = { 1.0, 1.0, 1.0, 1.0 };
     glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
     glLightfv(GL_LIGHT0, GL_SPECULAR, specular);
-    glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 0.1);
-    glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 0);
-    glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.01);
     glLightfv(GL_LIGHT0, GL_POSITION, posProj);
+
     glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, dirProj);
-    glEnable(GL_LIGHT0);
+    glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, 90.0);
+    
 
     /*Lumière 1: ambiente verte en dessous de la fourmi*/
     posAmbient[0] = 0;
     posAmbient[1] = -5;
     posAmbient[2] = 0;
+    posAmbient[3] = 0;
     GLfloat ambient2[] = { 0.0, 0.4, 0.0, 1.0 };
     glLightfv(GL_LIGHT1, GL_AMBIENT, ambient2);
     glLightfv(GL_LIGHT1, GL_POSITION, posAmbient);
@@ -445,7 +455,7 @@ int main(int argc, char** argv)
 
     glGenTextures(1, &id_tex_cylindre);
     glBindTexture(GL_TEXTURE_2D, id_tex_cylindre);
-    tex_cylindre = loadJpegImage("diamant.png", &width_tex_cylindre, &height_tex_cylindre, &bpp_tex_cylindre);
+    tex_cylindre = loadJpegImage("gold.png", &width_tex_cylindre, &height_tex_cylindre, &bpp_tex_cylindre);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width_tex_cylindre, height_tex_cylindre, 0, GL_RGB, GL_UNSIGNED_BYTE, tex_cylindre);
@@ -491,6 +501,8 @@ void updateAnimPattes()
 
 void idle()
 {
+    //posProj[1] -= 0.01f;
+    //std::cout << posProj[1] << std::endl;
     /*mise a jour des animations*/
 
     /*vérification des seuils*/
@@ -543,7 +555,6 @@ void affichage()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glShadeModel(GL_SMOOTH);
-
     /*définition de la perspective et application du zoom*/
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -553,8 +564,13 @@ void affichage()
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
+    
+
     /*positionnement de la caméra*/
     gluLookAt(0.0, 0.0, 10.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+
+    
+
     glRotatef(angley, 1.0, 0.0, 0.0);
     glRotatef(anglex, 0.0, 1.0, 0.0);
 
@@ -566,7 +582,15 @@ void affichage()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 
+    
+
     fourmi();
+
+    
+
+    //Point* pts_c = cylindre(n_cylindre, 1, 1);
+    //Face* faces_c = cylindre_faces(pts_c, n_cylindre);
+    //render_cylindre(faces_c, pts_c, n_cylindre);
 
     //Repère
     //axe x en rouge
