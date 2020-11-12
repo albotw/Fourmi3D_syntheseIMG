@@ -66,7 +66,6 @@ Face* sphere_faces(Point* sphere, int n, int m)
 
 void render_sphere(Point* sphere, Face* face_sphere, int n, int m)
 {
-    glEnable(GL_TEXTURE_2D);
     glBegin(GL_POLYGON);
     for (int i = 0; i < (n * m); i++)
     {
@@ -80,5 +79,4 @@ void render_sphere(Point* sphere, Face* face_sphere, int n, int m)
         glVertex3f(sphere[face_sphere[i].l].x, sphere[face_sphere[i].l].y, sphere[face_sphere[i].l].z);
     }
     glEnd();
-    glDisable(GL_TEXTURE_2D);
 }

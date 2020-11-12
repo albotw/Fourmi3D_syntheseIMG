@@ -30,13 +30,23 @@ Point* cylindre(int n, double hauteur, double rayon)
 Face* cylindre_faces(Point* pts_cyl, int n)
 {
     Face* f_cyl = new Face[n];
-    for (int i = 0; i < n - 1; i++)
+    for (int i = 0; i < n; i++)
     {
         Face f{ 0, 0, 0, 0 };
+
         f.i = i;
-        f.j = i + n;
-        f.k = i + n + 1;
         f.l = i + 1;
+        if (i != n - 1)
+        {
+            f.j = i + n;
+            f.k = i + n + 1;
+        }
+        else
+        {
+            f.j = 0;
+            f.k = 3;
+        }
+        
         f_cyl[i] = f;
     }
     return f_cyl;
@@ -53,12 +63,16 @@ void render_cylindre(Face* face_cyl, Point* pts_cyl, int n)
     }
     glEnd();
 
-    for (int i = 0; i < n - 1; i++)
+    for (int i = 0; i < n ; i++)
     {
         glBegin(GL_POLYGON);
+        glTexCoord2f(((float)i / (float)n), 0);
         glVertex3f(pts_cyl[face_cyl[i].i].x, pts_cyl[face_cyl[i].i].y, pts_cyl[face_cyl[i].i].z);
+        glTexCoord2f(((float)i + 1 / (float)n), 0);
         glVertex3f(pts_cyl[face_cyl[i].j].x, pts_cyl[face_cyl[i].j].y, pts_cyl[face_cyl[i].j].z);
+        glTexCoord2f(((float)i + 1 / (float)n), 1);
         glVertex3f(pts_cyl[face_cyl[i].k].x, pts_cyl[face_cyl[i].k].y, pts_cyl[face_cyl[i].k].z);
+        glTexCoord2f(((float)i / (float)n), 1);
         glVertex3f(pts_cyl[face_cyl[i].l].x, pts_cyl[face_cyl[i].l].y, pts_cyl[face_cyl[i].l].z);
         glEnd();
     }
