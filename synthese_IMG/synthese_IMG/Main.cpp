@@ -19,18 +19,21 @@ double zoom = 60.0f;
 GLfloat posProj[4];
 GLfloat posAmbient[4];
 
+//texture de la sphère
 int width_tex_sphere;
 int height_tex_sphere;
 int bpp_tex_sphere;
 GLuint id_tex_sphere;
 unsigned char* tex_sphere;
 
+//texture des cylindres
 int width_tex_cylindre;
 int height_tex_cylindre;
 int bpp_tex_cylindre;
 GLuint id_tex_cylindre;
 unsigned char* tex_cylindre;
 
+//valeurs et statut des animations de la fourmi
 double animValue_tete = 0.0;
 bool incrTete = true;
 double animValue_queue = 0.0;
@@ -42,20 +45,18 @@ bool incrMandibule = false;
 double animValue_patte = 0.0;
 bool incrPatte = true;
 
+//yeux de la fourmi (primitive sphère)
 int n_oeil = 20;
 int m_oeil = 20;
-
 Point* pts_oeil1;
 Point* pts_oeil2;
-
 Face* faces_oeil1;
 Face* faces_oeil2;
 
+//patte de la fourmi (primitive cylindre)
 int n_cylindre = 50;
-
 Point* pts_patteHaut;
 Point* pts_patteBas;
-
 Face* faces_patteHaut;
 Face* faces_patteBas;
 
@@ -77,37 +78,41 @@ void marron();
 void patte()
 {
     glPushMatrix();
-    glRotatef(15, -1, 0, 0);
+        glRotatef(15, -1, 0, 0);
 
-    glPushMatrix();
-    marron();
-    glTranslatef(0, 0, 1.0);
-    glScalef(0.15, 0.15, 2.0);
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, id_tex_cylindre);
-    render_cylindre(faces_patteHaut, pts_patteHaut, n_cylindre);
-    glDisable(GL_TEXTURE_2D);
-    glPopMatrix();
+        //cylindre collé à l'abdomen
+        glPushMatrix();
+            marron();
+            glTranslatef(0, 0, 1.0);
+            glScalef(0.15, 0.15, 2.0);
+            glEnable(GL_TEXTURE_2D);
+            glBindTexture(GL_TEXTURE_2D, id_tex_cylindre);
+            render_cylindre(faces_patteHaut, pts_patteHaut, n_cylindre);
+            glDisable(GL_TEXTURE_2D);
+        glPopMatrix();
 
-    glPushMatrix();
-    marron();
-    glTranslatef(0, 0, 3.15);
-    glScalef(0.2, 0.2, 0.2);
-    glutSolidSphere(1.0, 10, 10);
-    glPopMatrix();
+        //jointure
+        glPushMatrix();
+            marron();
+            glTranslatef(0, 0, 3.15);
+            glScalef(0.2, 0.2, 0.2);
+            glutSolidSphere(1.0, 10, 10);
+        glPopMatrix();
 
-    glPushMatrix();
-    marron();
-    glTranslatef(0, 0, 3.15);
-    glRotatef(90, 1.0, 0.0, 0.0);
+        //cylindre bas
+        glPushMatrix();
+            marron();
 
-    glTranslatef(0, 0, 0.2);
-    glScalef(0.10, 0.10, 2.0);
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, id_tex_cylindre);
-    render_cylindre(faces_patteBas, pts_patteBas, n_cylindre);
-    glDisable(GL_TEXTURE_2D);
-    glPopMatrix();
+            glTranslatef(0, 0, 3.15);
+            glRotatef(90, 1.0, 0.0, 0.0);
+
+            glTranslatef(0, 0, 0.2);
+            glScalef(0.10, 0.10, 2.0);
+            glEnable(GL_TEXTURE_2D);
+            glBindTexture(GL_TEXTURE_2D, id_tex_cylindre);
+            render_cylindre(faces_patteBas, pts_patteBas, n_cylindre);
+            glDisable(GL_TEXTURE_2D);
+        glPopMatrix();
 
     glPopMatrix();
 }
@@ -115,31 +120,33 @@ void patte()
 void antenne()
 {
     glPushMatrix();
-    glRotatef(animValue_antenne, 0, 1, 0);
+        glRotatef(animValue_antenne, 0, 1, 0);
 
-    glPushMatrix();
-    marron();
-    glTranslatef(0, 0.8, 0);
-    glRotatef(90, 0, 1, 0);
-    glScalef(0.05, 0.6, 0.05);
-    glutSolidCylinder(1, 1, 10, 10);
-    glPopMatrix();
+        //base de l'antenne (liée à le tête)
+        glPushMatrix();
+            marron();
+            glTranslatef(0, 0.8, 0);
+            glRotatef(90, 0, 1, 0);
+            glScalef(0.05, 0.6, 0.05);
+            glutSolidCylinder(1, 1, 10, 10);
+        glPopMatrix();
 
-    //jointure inter
-    glPushMatrix();
-    marron();
-    glTranslatef(-0.02, 1.35, 0);
-    glScalef(0.03, 0.03, 0.03);
-    glutSolidSphere(1.0, 10, 10);
-    glPopMatrix();
+        //jointure inter
+        glPushMatrix();
+            marron();
+            glTranslatef(-0.02, 1.35, 0);
+            glScalef(0.03, 0.03, 0.03);
+            glutSolidSphere(1.0, 10, 10);
+        glPopMatrix();
 
-    glPushMatrix();
-    marron();
-    glTranslatef(0, 1.35, 0);
-    glRotatef(90, 0, -1, 0);
-    glScalef(0.02, 0.02, 2.0);
-    glutSolidCylinder(1, 1, 10, 10);
-    glPopMatrix();
+        //bout de l'antenne
+        glPushMatrix();
+            marron();
+            glTranslatef(0, 1.35, 0);
+            glRotatef(90, 0, -1, 0);
+            glScalef(0.02, 0.02, 2.0);
+            glutSolidCylinder(1, 1, 10, 10);
+        glPopMatrix();
 
     glPopMatrix();
 }
@@ -147,9 +154,9 @@ void antenne()
 void abdomen()
 {
     glPushMatrix();
-    marron();
-    glScalef(1.6, 1.0, 1.0);
-    glutSolidSphere(1, 50, 50);
+        marron();
+        glScalef(1.6, 1.0, 1.0);
+        glutSolidSphere(1, 50, 50);
     glPopMatrix();
 }
 
@@ -158,53 +165,56 @@ void queue()
     glPushMatrix();
     glRotatef(animValue_queue, 0, 0, 1);
 
-    glPushMatrix();
+        glPushMatrix();
 
-    glTranslatef(1.4, 0, 0);
-    glRotatef(20, 0, 0, 1);
+            glTranslatef(1.4, 0, 0);
+            glRotatef(20, 0, 0, 1);
 
-    glPushMatrix();
-    marron();
-    glScalef(0.5, 0.5, 0.35);
-    glRotatef(90, 0, 1.0, 0);
-    glutSolidCylinder(1.0, 1.0, 10, 10);
-    glPopMatrix();
+            //jointure abdomen - queue
+            glPushMatrix();
+                marron();
+                glScalef(0.5, 0.5, 0.35);
+                glRotatef(90, 0, 1.0, 0);
+                glutSolidCylinder(1.0, 1.0, 10, 10);
+            glPopMatrix();
 
-    marron();
-    glTranslatef(1.8, 0, 0);
-    glScalef(1.8, 1.2, 1.2);
-    glutSolidSphere(1, 50, 50);
-    glPopMatrix();
+            //queue
+            marron();
+            glTranslatef(1.8, 0, 0);
+            glScalef(1.8, 1.2, 1.2);
+            glutSolidSphere(1, 50, 50);
+        glPopMatrix();
 
     glPopMatrix();
 }
 
 void mandibule()
 {
+    //base de la mandibule (liée à la tête)
     glPushMatrix();
-    glRotatef(90, 1, 0, 0);
-    glScalef(0.1, 0.1, 1);
-    glutSolidCylinder(1, 1, 10, 10);
+        glRotatef(90, 1, 0, 0);
+        glScalef(0.1, 0.1, 1);
+        glutSolidCylinder(1, 1, 10, 10);
+    glPopMatrix();
+
+    //jointure
+    glPushMatrix();
+        glTranslatef(0, -1.1, 0);
+        glScalef(0.1, 0.1, 0.1);
+        glutSolidSphere(1, 50, 50);
     glPopMatrix();
 
     glPushMatrix();
-    glTranslatef(0, -1.1, 0);
-    glScalef(0.1, 0.1, 0.1);
-    glutSolidSphere(1, 50, 50);
-    glPopMatrix();
+        glTranslatef(0, -1.1, 0);
+        glRotatef(animValue_mandibule, 0, 0, 1);
 
-    glPushMatrix();
-    glTranslatef(0, -1.1, 0);
-    glRotatef(animValue_mandibule, 0, 0, 1);
-
-    glPushMatrix();
-    glRotatef(90, 1, 1, 0);
-
-    glScalef(0.1, 0.1, 1.2);
-
-    glTranslatef(0, 0, 0.05);
-    glutSolidCylinder(1, 1, 10, 10);
-    glPopMatrix();
+        //bout de la mandibule
+        glPushMatrix();
+            glRotatef(90, 1, 1, 0);
+            glScalef(0.1, 0.1, 1.2);
+            glTranslatef(0, 0, 0.05);
+            glutSolidCylinder(1, 1, 10, 10);
+        glPopMatrix();
 
     glPopMatrix();
 }
@@ -215,97 +225,88 @@ void tete()
     glPushMatrix();
     glRotatef(animValue_tete, 0, 1, 0);
 
-    //jointure
-    glPushMatrix();
-    marron();
-    glTranslatef(-2.0, 0, 0);
-    glRotatef(90, 0, 1.0, 0);
-    glScalef(0.3, 0.3, 0.6);
-    glutSolidCylinder(1.0, 1.0, 10, 10);
-    glPopMatrix();
+        //jointure
+        glPushMatrix();
+            marron();
+            glTranslatef(-2.0, 0, 0);
+            glRotatef(90, 0, 1.0, 0);
+            glScalef(0.3, 0.3, 0.6);
+            glutSolidCylinder(1.0, 1.0, 10, 10);
+        glPopMatrix();
 
-    //tête
-    glPushMatrix();
-    marron();
-    glTranslatef(-2.5, 0, 0);
-    glScalef(1, 0.7, 0.9);
-    glutSolidSphere(1.0, 100, 100);
-    glPopMatrix();
+        //tête
+        glPushMatrix();
+            marron();
+            glTranslatef(-2.5, 0, 0);
+            glScalef(1, 0.7, 0.9);
+            glutSolidSphere(1.0, 100, 100);
+        glPopMatrix();
 
-    //mandibule droite
-    glPushMatrix();
-    glColor3f(1, 1, 1);
-    marron();
+        //mandibules
+        glPushMatrix();
+            marron();
+            glTranslatef(-2.5, 0, 0);
 
-    glTranslatef(-2.5, 0, 0);
-    glRotatef(90, 0, 1, 0);
-    glRotatef(90, 1, 0, 0);
+            //mandibule droite
+            glPushMatrix();
+                glRotatef(90, 0, 1, 0);
+                glRotatef(90, 1, 0, 0);
+                glTranslatef(-0.5, -0.8, 0);
+                glScalef(0.5, 0.5, 0.5);
+                mandibule();
+            glPopMatrix();
 
-    glPushMatrix();
-    glTranslatef(-0.5, -0.8, 0);
-    glScalef(0.5, 0.5, 0.5);
-    mandibule();
-    glPopMatrix();
-    glPopMatrix();
+            //mandibule gauche
+            glPushMatrix();
+                glRotatef(90, 0, -1, 0);
+                glRotatef(90, -1, 0, 0);
+                glTranslatef(-0.5, -0.8, 0);
+                glScalef(0.5, 0.5, 0.5);
+                mandibule();
+            glPopMatrix();
+        glPopMatrix();
 
-    //mandibule gauche
-    glPushMatrix();
-    glColor3f(1, 1, 1);
-    marron();
+        //yeux
+        glPushMatrix();
+            glTranslatef(-2.7, 0, 0);
+            glScalef(0.2, 0.2, 0.2);
 
-    glTranslatef(-2.5, 0, 0);
-    glRotatef(90, 0, -1, 0);
-    glRotatef(90, -1, 0, 0);
+            glPushMatrix();
+                glTranslatef(0, 0.2, -4);
+                glEnable(GL_TEXTURE_2D);
+                glBindTexture(GL_TEXTURE_2D, id_tex_sphere);
+                render_sphere(pts_oeil1, faces_oeil1, n_oeil, m_oeil);
+                glDisable(GL_TEXTURE_2D);
+            glPopMatrix();
 
-    glPushMatrix();
-    glTranslatef(-0.5, -0.8, 0);
-    glScalef(0.5, 0.5, 0.5);
-    mandibule();
-    glPopMatrix();
-    glPopMatrix();
+            glPushMatrix();
+                glTranslatef(0, 0.2, 4);
+                glEnable(GL_TEXTURE_2D);
+                glBindTexture(GL_TEXTURE_2D, id_tex_sphere);
+                render_sphere(pts_oeil2, faces_oeil2, n_oeil, m_oeil);
+                glDisable(GL_TEXTURE_2D);
+            glPopMatrix();
 
-    //yeux
-    glPushMatrix();
-    glTranslatef(-2.7, 0, 0);
-    glScalef(0.2, 0.2, 0.2);
+        glPopMatrix();
 
-    glPushMatrix();
-    glTranslatef(0, 0.2, -4);
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, id_tex_sphere);
-    render_sphere(pts_oeil1, faces_oeil1, n_oeil, m_oeil);
-    glDisable(GL_TEXTURE_2D);
-    glPopMatrix();
+        //antennes
+        glPushMatrix();
+            glTranslatef(-2.5, 0, 0);
+            glRotatef(20, 0, 0, 1);
 
-    glPushMatrix();
-    glTranslatef(0, 0.2, 4);
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, id_tex_sphere);
-    render_sphere(pts_oeil2, faces_oeil2, n_oeil, m_oeil);
-    glDisable(GL_TEXTURE_2D);
-    glPopMatrix();
+            glPushMatrix();
+                glTranslatef(0, 0, 0.5);
+                glRotatef(20, 0, 1, 0);
+                antenne();
+            glPopMatrix();
 
-    glPopMatrix();
+            glPushMatrix();
+                glTranslatef(0, 0, -0.5);
+                glRotatef(20, 0, -1, 0);
+                antenne();
+            glPopMatrix();
 
-    //antennes
-    glPushMatrix();
-
-    glTranslatef(-2.5, 0, 0);
-    glRotatef(20, 0, 0, 1);
-
-    glPushMatrix();
-    glTranslatef(0, 0, 0.5);
-    glRotatef(20, 0, 1, 0);
-    antenne();
-    glPopMatrix();
-
-    glPushMatrix();
-    glTranslatef(0, 0, -0.5);
-    glRotatef(20, 0, -1, 0);
-    antenne();
-    glPopMatrix();
-
-    glPopMatrix();
+        glPopMatrix();
     glPopMatrix();
 }
 
@@ -317,50 +318,52 @@ void fourmi()
 
     //pattes coté gauche
     glPushMatrix();
-    glRotatef(10 * cos(animValue_patte + (M_PI) / 2), 1, 1, 0);
-    patte();
+        glRotatef(10 * cos(animValue_patte + (M_PI) / 2), 1, 1, 0);
+        patte();
     glPopMatrix();
 
     glPushMatrix();
-    glRotatef(10 * cos(animValue_patte + (M_PI) / 3), 1, 1, 0);
-    glPushMatrix();
-    glRotatef(45, 0.0, 1.0, 0.0);
-    patte();
-    glPopMatrix();
+        glRotatef(10 * cos(animValue_patte + (M_PI) / 3), 1, 1, 0);
+
+        glPushMatrix();
+            glRotatef(45, 0.0, 1.0, 0.0);
+            patte();
+        glPopMatrix();
     glPopMatrix();
 
     glPushMatrix();
-    glRotatef(10 * cos(animValue_patte + (2 * M_PI) / 3), 1, 1, 0);
-    glPushMatrix();
-    glRotatef(45, 0.0, -1.0, 0.0);
-    patte();
-    glPopMatrix();
+        glRotatef(10 * cos(animValue_patte + (2 * M_PI) / 3), 1, 1, 0);
+
+        glPushMatrix();
+            glRotatef(45, 0.0, -1.0, 0.0);
+            patte();
+        glPopMatrix();
     glPopMatrix();
 
     //pattes coté droit
     glPushMatrix();
     glScalef(1.0, 1.0, -1.0);
 
-    glPushMatrix();
-    glRotatef(10 * sin(animValue_patte + (M_PI) / 2), 1, 1, 0);
-    patte();
-    glPopMatrix();
+        glPushMatrix();
+            glRotatef(10 * sin(animValue_patte + (M_PI) / 2), 1, 1, 0);
+            patte();
+        glPopMatrix();
 
-    glPushMatrix();
-    glRotatef(10 * sin(animValue_patte + (M_PI) / 3), 1, 1, 0);
-    glPushMatrix();
-    glRotatef(45, 0.0, -1.0, 0.0);
-    patte();
-    glPopMatrix();
-    glPopMatrix();
+        glPushMatrix();
+            glRotatef(10 * sin(animValue_patte + (M_PI) / 3), 1, 1, 0);
+            glPushMatrix();
+                glRotatef(45, 0.0, -1.0, 0.0);
+                patte();
+            glPopMatrix();
+        glPopMatrix();
 
-    glPushMatrix();
-    glRotatef(10 * sin(animValue_patte + (2 * M_PI) / 3), 1, 1, 0);
-    glPushMatrix();
-    glRotatef(45, 0.0, 1.0, 0.0);
-    patte();
-    glPopMatrix();
-    glPopMatrix();
+        glPushMatrix();
+            glRotatef(10 * sin(animValue_patte + (2 * M_PI) / 3), 1, 1, 0);
+            glPushMatrix();
+                glRotatef(45, 0.0, 1.0, 0.0);
+                patte();
+            glPopMatrix();
+        glPopMatrix();
 
     glPopMatrix();
 }
@@ -388,36 +391,36 @@ int main(int argc, char** argv)
     glEnable(GL_LIGHTING);
     glEnable(GL_NORMALIZE);
 
-    /*coloration des polygones*/
+    /*application des réflections de matériau (type OR)*/
     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-    float MatAmbient[] = { 0.24725, 0.1995, 0.0745, 1.0f };
-    float MatDiffuse[] = { 0.75164, 0.60648, 0.22648, 1.0f };
-    float MatSpecular[] = { 0.628281, 0.555802, 0.366065, 1.0f };
-    float MatShininess = 0.4 * 128.0;
-    float black[] = { 0.0f,0.0f,0.0f,1.0f };
-    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, MatAmbient);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, MatDiffuse);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, MatSpecular);
-    glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, MatShininess);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, black);
+    GLfloat ambientOr[] = { 0.24725, 0.1995, 0.0745, 1.0f };
+    GLfloat diffuseOr[] = { 0.75164, 0.60648, 0.22648, 1.0f };
+    GLfloat specularOr[] = { 0.628281, 0.555802, 0.366065, 1.0f };
+    GLfloat shine = 0.4 * 128.0;
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambientOr);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuseOr);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specularOr);
+    glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, shine);
 
     /*Lumière 0: spot blanc au dessus de la fourmi*/
     glEnable(GL_LIGHT0);
     posProj[0] = 0;
     posProj[1] = 5;
     posProj[2] = 0;
-    posProj[3] = 1.0;
+    posProj[3] = 1.0;   //important pour définir un spot
     GLfloat dirProj[] = { 0.0, 0.0, 0.0, 1.0};
-    GLfloat ambient[] = { 0.1, 0.1, 0.1, 1.0 };
+    GLfloat ambient[] = { 0.3, 0.3, 0.3, 1.0 };
     GLfloat diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
     GLfloat specular[] = { 1.0, 1.0, 1.0, 1.0 };
     glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
     glLightfv(GL_LIGHT0, GL_SPECULAR, specular);
     glLightfv(GL_LIGHT0, GL_POSITION, posProj);
-
     glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, dirProj);
     glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, 90.0);
+    glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 0.1);
+    glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.01);
+    glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 1.0);
     
 
     /*Lumière 1: ambiente verte en dessous de la fourmi*/
@@ -501,8 +504,6 @@ void updateAnimPattes()
 
 void idle()
 {
-    //posProj[1] -= 0.01f;
-    //std::cout << posProj[1] << std::endl;
     /*mise a jour des animations*/
 
     /*vérification des seuils*/
@@ -555,22 +556,19 @@ void affichage()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glShadeModel(GL_SMOOTH);
+
     /*définition de la perspective et application du zoom*/
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     gluPerspective(zoom, 500.0 / 500.0, 0.1, 100.0);
     glPopMatrix();
 
+    /*passage en affichage des objets*/
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    
-
     /*positionnement de la caméra*/
     gluLookAt(0.0, 0.0, 10.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
-
-    
-
     glRotatef(angley, 1.0, 0.0, 0.0);
     glRotatef(anglex, 0.0, 1.0, 0.0);
 
@@ -582,15 +580,7 @@ void affichage()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 
-    
-
     fourmi();
-
-    
-
-    //Point* pts_c = cylindre(n_cylindre, 1, 1);
-    //Face* faces_c = cylindre_faces(pts_c, n_cylindre);
-    //render_cylindre(faces_c, pts_c, n_cylindre);
 
     //Repère
     //axe x en rouge
@@ -678,6 +668,7 @@ void mouse(int button, int state, int x, int y)
 
 void specialKeyInput(int key, int x, int y)
 {
+    /*Modification des positions de la caméra*/
     switch (key)
     {
     case GLUT_KEY_UP:
