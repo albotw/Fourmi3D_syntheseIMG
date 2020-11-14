@@ -378,7 +378,7 @@ int main(int argc, char** argv)
 {
     /*création et paramètrage de la fenêtre et de GLUT*/
     glutInit(&argc, argv);
-    glutSetOption(GLUT_MULTISAMPLE, 8);
+    glutSetOption(GLUT_MULTISAMPLE, 8); //anticrénelage x8
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH | GLUT_MULTISAMPLE);
     glutInitWindowPosition(0, 0);
     glutInitWindowSize(1000, 1000);
@@ -396,7 +396,7 @@ int main(int argc, char** argv)
     GLfloat ambientOr[] = { 0.24725, 0.1995, 0.0745, 1.0f };
     GLfloat diffuseOr[] = { 0.75164, 0.60648, 0.22648, 1.0f };
     GLfloat specularOr[] = { 0.628281, 0.555802, 0.366065, 1.0f };
-    GLfloat shine = 0.4 * 128.0;
+    GLfloat shine = 51.2;
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambientOr);
     glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuseOr);
     glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specularOr);
@@ -581,26 +581,6 @@ void affichage()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 
     fourmi();
-
-    //Repère
-    //axe x en rouge
-    glBegin(GL_LINES);
-    glColor3f(1.0, 0.0, 0.0);
-    glVertex3f(0, 0, 0.0);
-    glVertex3f(1, 0, 0.0);
-    glEnd();
-    //axe des y en vert
-    glBegin(GL_LINES);
-    glColor3f(0.0, 1.0, 0.0);
-    glVertex3f(0, 0, 0.0);
-    glVertex3f(0, 1, 0.0);
-    glEnd();
-    //axe des z en bleu
-    glBegin(GL_LINES);
-    glColor3f(0.0, 0.0, 1.0);
-    glVertex3f(0, 0, 0.0);
-    glVertex3f(0, 0, 1.0);
-    glEnd();
 
     glFlush();
     glutSwapBuffers();
